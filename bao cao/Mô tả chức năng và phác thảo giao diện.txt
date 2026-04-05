@@ -1,0 +1,100 @@
+1. Mô tả chức năng của ứng dụng Bản đồ nhà trọ
+
+Ứng dụng Bản đồ nhà trọ giúp người dùng tìm kiếm, xem thông tin và đăng tin phòng trọ trên bản đồ. Người dùng có thể xem vị trí phòng trọ gần mình, xem chi tiết phòng và liên hệ với chủ trọ.
+
+I. Chức năng dành cho người dùng
+1. Xem bản đồ phòng trọ
+Hiển thị bản đồ Google Maps.
+Hiển thị các marker (điểm đánh dấu) vị trí phòng trọ.
+Khi bấm vào marker sẽ hiển thị:
+Tên phòng trọ
+Giá thuê
+Địa chỉ
+Nút xem chi tiết
+2. Tìm kiếm phòng trọ
+
+Người dùng có thể tìm phòng trọ theo:
+
+Tên khu vực
+Địa chỉ
+Giá phòng
+
+Chức năng:
+
+Nhập từ khóa vào ô tìm kiếm
+Nhấn Search
+Hiển thị các phòng trọ phù hợp trên bản đồ
+3. Xem danh sách phòng trọ
+
+Hiển thị danh sách các phòng trọ gồm:
+
+Hình ảnh
+Tên phòng trọ
+Giá thuê
+Địa chỉ
+Nút Xem chi tiết
+4. Xem chi tiết phòng trọ
+
+Khi người dùng chọn một phòng trọ sẽ hiển thị:
+
+Hình ảnh phòng
+Giá phòng
+Địa chỉ
+Diện tích
+Mô tả phòng
+Thông tin liên hệ chủ trọ
+Nút Xem vị trí trên bản đồ
+5. Liên hệ chủ trọ
+
+Người dùng có thể:
+
+Gọi điện
+Nhắn tin
+Xem số điện thoại chủ trọ
+II. Chức năng dành cho chủ trọ
+1. Đăng phòng trọ
+
+Chủ trọ có thể thêm phòng trọ mới gồm:
+
+Tên phòng
+Giá thuê
+Địa chỉ
+Mô tả
+Số điện thoại
+Hình ảnh
+Vị trí trên bản đồ
+2. Quản lý phòng trọ
+
+Chủ trọ có thể:
+
+Sửa thông tin phòng trọ
+Xóa phòng trọ
+Cập nhật trạng thái (còn phòng / hết phòng)
+III. Chức năng hệ thống
+1. Định vị vị trí người dùng
+
+Ứng dụng có thể:
+
+Xác định vị trí hiện tại của người dùng
+Hiển thị các phòng trọ gần nhất
+2. Lưu dữ liệu
+
+Dữ liệu phòng trọ được lưu trong:
+
+Firebase
+hoặc
+Database (MySQL / SQLite)
+3. Điều hướng giữa các màn hình
+
+Các màn hình chính:
+
+Trang chủ (Bản đồ)
+Danh sách phòng
+Chi tiết phòng
+Thêm phòng trọ
+IV. Danh sách các màn hình chính
+Màn hình Trang chủ (Map Screen)
+Màn hình Danh sách phòng trọ
+Màn hình Chi tiết phòng trọ
+Màn hình Thêm phòng trọ
+Màn hình Tìm kiếm

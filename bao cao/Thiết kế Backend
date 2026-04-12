@@ -1,0 +1,355 @@
+Bài tuần 3 – Cao Trường Sơn 20222216
+I. Tổng quan Backend Function
+1. Lưu bằng Database (MySQL / SQLite) 
+Đây là cách phổ biến nhất khi làm:
+•	PHP 
+•	NodeJS 
+•	Backend API 
+Dữ liệu được lưu trong các bảng:
+1. Bảng users
+•	Lưu thông tin người dùng / chủ trọ 
+2. Bảng rooms  (quan trọng nhất)
+•	Lưu: 
+o	Tên phòng 
+o	Giá 
+o	Địa chỉ 
+o	Tọa độ (lat, lng) 
+o	Mô tả 
+o	SĐT
+
+Backend được chia thành 3 nhóm chính:
+•	User Functions (người tìm phòng) 
+•	Owner Functions (chủ trọ) 
+•	System Functions (hệ thống) 
+II. Danh sách Function chi tiết
+1. Nhóm User (Người dùng)
+1.1 Xem bản đồ phòng trọ (Map Screen)
+Function	Mục đích	Giao diện
+getRoomMarkers(lat, lng, radius)	Lấy danh sách phòng theo tọa độ để hiển thị marker	Trang chủ (Map)
+getNearbyRooms(lat, lng)	Lấy phòng gần vị trí người dùng	Trang chủ
+getRoomPopupInfo(room_id)	Lấy thông tin nhanh khi click marker	Popup trên map
+Kết quả trả về:
+•	Tên phòng 
+•	Giá 
+•	Địa chỉ 
+1.2 Tìm kiếm phòng (Search Screen)
+Function	Mục đích	Giao diện
+searchRooms(keyword)	Tìm phòng theo từ khóa	Màn hình tìm kiếm
+filterRooms(min_price, max_price, location)	Lọc theo giá/khu vực	Màn hình tìm kiếm
+suggestLocations(keyword)	Gợi ý địa điểm	Ô tìm kiếm
+1.3 Danh sách phòng (List Screen)
+Function	Mục đích	Giao diện
+getRoomList(page, limit)	Lấy danh sách phòng	Danh sách phòng
+getRoomListByFilter(filter)	Lấy danh sách theo bộ lọc	Danh sách
+1.4 Chi tiết phòng (Detail Screen)
+Function	Mục đích	Giao diện
+getRoomDetail(room_id)	Lấy thông tin chi tiết	Trang chi tiết
+getRoomImages(room_id)	Lấy ảnh phòng	Trang chi tiết
+getOwnerContact(room_id)	Lấy thông tin liên hệ	Trang chi tiết
+1.5 Liên hệ chủ trọ
+Function	Mục đích	Giao diện
+logContact(room_id, user_id)	Lưu lịch sử liên hệ	Hệ thống
+sendMessage(owner_id, content) (optional)	Nhắn tin	Chat
+II. Nhóm Owner (Chủ trọ)
+2.1 Đăng phòng (Add Room Screen)
+Function	Mục đích	Giao diện
+createRoom(data)	Tạo phòng mới	Thêm phòng
+uploadRoomImages(room_id, files)	Upload ảnh	Thêm phòng
+getCoordinates(address)	Lấy lat/lng từ địa chỉ	Map picker
+2.2 Quản lý phòng
+Function	Mục đích	Giao diện
+getMyRooms(user_id)	Lấy danh sách phòng của chủ trọ	Quản lý
+updateRoom(room_id, data)	Cập nhật phòng	Quản lý
+deleteRoom(room_id)	Xóa phòng	Quản lý
+updateRoomStatus(room_id, status)	Cập nhật trạng thái	Quản lý
+III. Nhóm System (Hệ thống)
+3.1 Định vị người dùng
+Function	Mục đích	Giao diện
+getCurrentLocation()	Lấy vị trí người dùng	Map
+getNearbyRooms(lat, lng)	Lấy phòng gần	Map
+3.2 Quản lý dữ liệu
+Function	Mục đích
+saveRoom(room)	Lưu phòng trọ
+getAllRooms()	Lấy toàn bộ phòng
+geocodeAddress(address)	Địa chỉ → tọa độ
+IV. Mapping Function ↔ Màn hình
+1. Trang chủ (Map Screen)
+•	getRoomMarkers() 
+•	getNearbyRooms() 
+•	getRoomPopupInfo() 
+2. Màn hình Tìm kiếm
+•	searchRooms() 
+•	filterRooms() 
+•	suggestLocations() 
+3. Màn hình Danh sách
+•	getRoomList() 
+4. Màn hình Chi tiết
+•	getRoomDetail() 
+•	getRoomImages() 
+•	getOwnerContact() 
+5. Màn hình Thêm phòng
+•	createRoom() 
+•	uploadRoomImages() 
+•	getCoordinates() 
+6. Màn hình Quản lý phòng
+•	getMyRooms() 
+•	updateRoom() 
+•	deleteRoom() 
+•	updateRoomStatus() 
+V. Luồng hoạt động chính
+1. Người dùng
+•	Mở map → getRoomMarkers 
+•	Click marker → getRoomPopupInfo 
+•	Xem chi tiết → getRoomDetail 
+2. Tìm kiếm
+•	Nhập từ khóa → searchRooms 
+•	Lọc → filterRooms 
+3. Chủ trọ
+•	Đăng phòng → createRoom 
+•	Upload ảnh → uploadRoomImages 
+•	Quản lý → updateRoom / deleteRoom
+Bản thiết kế chi tiết từng API/Function (url/name, input, output, database)
+I. Nhóm Function cho người dùng (User)
+1. getRoomMarkers
+•	Mục đích: Lấy danh sách phòng để hiển thị marker trên bản đồ 
+•	Màn hình: Trang chủ (Map Screen) 
+Input
+Tên	Kiểu	Mô tả
+lat	float	Vị trí người dùng
+lng	float	Vị trí người dùng
+radius	int	Bán kính tìm kiếm
+Output
+Trường	Mô tả
+id	ID phòng
+title	Tên phòng
+price	Giá
+address	Địa chỉ
+lat, lng	Tọa độ
+Database
+•	Bảng: rooms 
+•	Điều kiện: status = available 
+Mô tả :
+Input
+•	lat, lng (float): Tọa độ vị trí người dùng 
+•	radius (int): Bán kính tìm kiếm (km) 
+Dùng để xác định khu vực tìm phòng trên bản đồ
+Output
+•	id: Mã phòng 
+•	title: Tên phòng 
+•	price: Giá thuê 
+•	address: Địa chỉ 
+•	lat, lng: Tọa độ phòng 
+ Dùng để hiển thị marker và thông tin phòng trên bản đồ
+2. getNearbyRooms
+•	Mục đích: Lấy phòng gần vị trí người dùng 
+•	Màn hình: Map Screen 
+Input
+Tên	Kiểu
+lat	float
+lng	float
+Output
+Trường	Mô tả
+id	ID
+title	Tên
+distance	Khoảng cách
+Database
+•	Bảng: rooms 
+•	Tính khoảng cách từ tọa độ 
+Mô tả
+Lấy danh sách phòng trọ gần vị trí người dùng dựa trên tọa độ.
+Input
+•	lat (float) 
+•	lng (float) 
+Output
+•	id: ID phòng 
+•	title: Tên phòng 
+•	distance: Khoảng cách
+3. getRoomPopupInfo
+•	Mục đích: Hiển thị thông tin nhanh khi click marker 
+•	Màn hình: Popup Map 
+Mô tả:
+Input
+Tên	Kiểu
+room_id	int
+Output
+Trường	Mô tả
+title	Tên phòng
+price	Giá
+address	Địa chỉ
+Database
+•	Bảng: rooms 
+Mô tả
+Lấy thông tin cơ bản của phòng trọ khi người dùng chọn (click) vào marker.
+Input
+•	room_id (int) 
+Output
+•	title: Tên phòng 
+•	price: Giá 
+•	address: Địa chỉ
+4. searchRooms
+•	Mục đích: Tìm phòng theo từ khóa 
+•	Màn hình: Search Screen 
+Input
+Tên	Kiểu
+keyword	string
+min_price	float
+max_price	float
+Output
+Trường	Mô tả
+id	ID
+title	Tên
+price	Giá
+address	Địa chỉ
+Database
+•	Bảng: rooms 
+•	Tìm theo: 
+o	title 
+o	address 
+o	price 
+5. getRoomList
+•	Mục đích: Hiển thị danh sách phòng 
+•	Màn hình: List Screen 
+Input
+Tên	Kiểu
+page	int
+limit	int
+Output
+Trường	Mô tả
+data	danh sách phòng
+total	tổng số
+Database
+•	Bảng: rooms 
+•	Phân trang 
+6. getRoomDetail
+•	Mục đích: Xem chi tiết phòng 
+•	Màn hình: Detail Screen 
+Input
+Tên	Kiểu
+room_id	int
+Output
+Trường	Mô tả
+title	Tên
+price	Giá
+address	Địa chỉ
+area	Diện tích
+description	Mô tả
+phone	Liên hệ
+images	Danh sách ảnh
+Database
+•	rooms 
+•	room_images 
+7. getOwnerContact
+•	Mục đích: Lấy số điện thoại chủ trọ 
+•	Màn hình: Detail Screen 
+Input
+Tên	Kiểu
+room_id	int
+Output
+Trường	Mô tả
+phone	SĐT
+Database
+•	Bảng: rooms 
+8. logContact
+•	Mục đích: Lưu lịch sử liên hệ 
+•	Màn hình: Hệ thống 
+Input
+Tên	Kiểu
+room_id	int
+user_id	int
+Output
+Trường	Mô tả
+message	Thành công
+Database
+•	Bảng: contacts_log 
+II. Nhóm Function cho chủ trọ (Owner)
+9. createRoom
+•	Mục đích: Đăng phòng trọ 
+•	Màn hình: Thêm phòng 
+Input
+Trường	Mô tả
+title	Tên phòng
+price	Giá
+address	Địa chỉ
+lat, lng	Tọa độ
+area	Diện tích
+description	Mô tả
+phone	SĐT
+Output
+Trường	Mô tả
+room_id	ID phòng
+Database
+•	Bảng: rooms 
+10. uploadRoomImages
+•	Mục đích: Upload ảnh phòng 
+•	Màn hình: Thêm phòng 
+Input
+Trường	Mô tả
+room_id	int
+files	ảnh
+Output
+Trường	Mô tả
+image_url	link ảnh
+Database
+•	Bảng: room_images 
+11. getMyRooms
+•	Mục đích: Lấy phòng của chủ trọ 
+•	Màn hình: Quản lý phòng 
+Input
+Trường	Mô tả
+user_id	int
+Output
+•	Danh sách phòng 
+Database
+•	Bảng: rooms
+12. updateRoom
+•	Mục đích: Cập nhật phòng 
+•	Màn hình: Quản lý 
+Input
+Trường	Mô tả
+room_id	int
+dữ liệu cập nhật	
+Output
+•	Thông báo thành công 
+Database
+•	Bảng: rooms 
+13. deleteRoom
+•	Mục đích: Xóa phòng 
+•	Màn hình: Quản lý 
+Input
+Trường	Mô tả
+room_id	int
+Output
+•	Thông báo thành công 
+Database
+•	Bảng: rooms 
+14. updateRoomStatus
+•	Mục đích: Cập nhật trạng thái phòng 
+•	Màn hình: Quản lý 
+Input
+Trường	Mô tả
+room_id	int
+status	available / rented
+Output
+•	Thành công 
+Database
+•	Bảng: rooms 
+III. Nhóm Function hệ thống
+15. getCurrentLocation
+•	Mục đích: Lấy vị trí người dùng 
+•	Màn hình: Map 
+Input
+•	Không có 
+Output
+Trường	Mô tả
+lat	vĩ độ
+lng	kinh độ
+16. geocodeAddress
+•	Mục đích: Chuyển địa chỉ → tọa độ 
+•	Màn hình: Thêm phòng 
+Input
+Trường	Mô tả
+address	địa chỉ
+Output
+Trường	Mô tả
+lat, lng	tọa độ
+

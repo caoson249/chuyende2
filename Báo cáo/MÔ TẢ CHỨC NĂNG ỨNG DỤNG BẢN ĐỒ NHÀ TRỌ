@@ -1,0 +1,63 @@
+MÔ TẢ CHỨC NĂNG ỨNG DỤNG BẢN ĐỒ NHÀ TRỌ
+1. Chức năng tìm kiếm nhà trọ
+•	Người dùng nhập tên khu vực / địa chỉ / tên nhà trọ để tìm kiếm. 
+•	Ứng dụng hiển thị các nhà trọ phù hợp trên bản đồ. 
+•	Có thể lọc theo: 
+o	Giá tiền 
+o	Khoảng cách 
+o	Diện tích 
+o	Tiện nghi (wifi, điều hòa, chỗ để xe...) 
+2. Chức năng hiển thị nhà trọ trên bản đồ
+•	Sử dụng bản đồ để hiển thị vị trí các nhà trọ. 
+•	Mỗi nhà trọ được đánh dấu bằng marker (ghim) trên bản đồ. 
+•	Khi nhấn vào marker sẽ hiển thị: 
+o	Tên nhà trọ 
+o	Giá thuê 
+o	Địa chỉ 
+o	Hình ảnh 
+o	Thông tin liên hệ 
+3. Chức năng xem chi tiết nhà trọ
+Khi người dùng chọn một nhà trọ sẽ hiển thị:
+•	Hình ảnh phòng trọ 
+•	Giá thuê 
+•	Diện tích 
+•	Địa chỉ 
+•	Tiện nghi 
+•	Số điện thoại chủ trọ 
+•	Mô tả phòng trọ 
+4. Chức năng đăng tin nhà trọ (cho chủ trọ)
+Chủ trọ có thể đăng thông tin phòng trọ gồm:
+•	Tên nhà trọ 
+•	Địa chỉ 
+•	Giá thuê 
+•	Diện tích 
+•	Tiện nghi 
+•	Hình ảnh 
+•	Số điện thoại liên hệ 
+•	Vị trí trên bản đồ 
+5. Chức năng đăng nhập / đăng ký
+Người dùng có thể:
+•	Đăng ký tài khoản 
+•	Đăng nhập vào hệ thống 
+Phân quyền:
+•	Người thuê trọ: tìm kiếm, xem thông tin 
+•	Chủ trọ: đăng và quản lý tin đăng 
+6. Chức năng quản lý tin đăng
+Chủ trọ có thể:
+•	Sửa thông tin nhà trọ 
+•	Xóa tin đăng 
+•	Cập nhật hình ảnh 
+•	Cập nhật giá thuê 
+7. Chức năng lưu nhà trọ yêu thích
+Người dùng có thể:
+•	Lưu nhà trọ vào danh sách yêu thích 
+•	Xem lại các nhà trọ đã lưu 
+8. Chức năng liên hệ chủ trọ
+Người dùng có thể:
+•	Gọi điện trực tiếp 
+•	Nhắn tin cho chủ trọ 
+•	Xem chỉ đường đến nhà trọ trên bản đồ 
+9. Chức năng định vị vị trí người dùng
+Ứng dụng sử dụng GPS để:
+•	Xác định vị trí hiện tại 
+•	Hiển thị các nhà trọ gần người dùng 

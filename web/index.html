@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="testphongtro">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>testphongtro</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Google Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUHpH6fByGO1QqmO1o4Rjl3HKRIZCCrlM"></script>
+</head>
+<body>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Cấu hình Firebase Web lấy từ thông tin bạn cung cấp
+    var firebaseConfig = {
+      apiKey: "AIzaSyCCKu-Cy__YNh4_gSaUFdmxsphGTPrHSGM",
+      authDomain: "phongtro-b3764.firebaseapp.com",
+      projectId: "phongtro-b3764",
+      storageBucket: "phongtro-b3764.firebasestorage.app",
+      messagingSenderId: "542785708443",
+      appId: "1:542785708443:web:your_web_app_id" // Thay bằng Web App ID nếu có, hoặc để tạm thế này
+    };
+    // Khởi tạo Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

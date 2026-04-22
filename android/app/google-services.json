@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "542785708443",
+    "project_id": "phongtro-b3764",
+    "storage_bucket": "phongtro-b3764.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542785708443:android:9feb0bfb7e74bb0f18813e",
+        "android_client_info": {
+          "package_name": "com.example.testphongtro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCKu-Cy__YNh4_gSaUFdmxsphGTPrHSGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

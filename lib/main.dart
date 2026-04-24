@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         // ĐỔI NỀN APPBAR SANG MÀU XÁM TẠI ĐÂY
         appBarTheme: AppBarTheme(
+          // Màu xám nhạt chuyên nghiệp
           backgroundColor: Colors.grey[200], // Màu xám nhạt chuyên nghiệp
           foregroundColor: Colors.black,    // Chữ màu đen để nổi bật trên nền xám
           elevation: 0,

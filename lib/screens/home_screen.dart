@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Tải dữ liệu từ Firebase ngay khi vào app
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<RoomProvider>(context, listen: false).fetchRooms();
     });
@@ -31,6 +30,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final roomProvider = context.watch<RoomProvider>();
     final rooms = roomProvider.rooms;
+
+    // Tự động nhảy đến vị trí nếu có yêu cầu từ màn hình Chi tiết
+    if (roomProvider.jumpToLocation != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mapController.move(roomProvider.jumpToLocation!, 15);
+        roomProvider.clearJumpToLocation(); // Xóa vị trí sau khi đã nhảy tới
+      });
+    }
 
     List<Marker> markers = rooms.map((room) {
       return Marker(

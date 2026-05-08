@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/room_provider.dart';
 import 'login_screen.dart';
 import 'edit_profile_screen.dart';
+import 'my_rooms_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,6 +12,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final roomProvider = Provider.of<RoomProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -34,12 +37,15 @@ class ProfileScreen extends StatelessWidget {
       body: authProvider.isLoadingData 
           ? const Center(child: CircularProgressIndicator()) 
           : authProvider.isLoggedIn
-              ? _buildProfileContent(context, authProvider)
+              ? _buildProfileContent(context, authProvider, roomProvider)
               : _buildGuestContent(context),
     );
   }
 
-  Widget _buildProfileContent(BuildContext context, AuthProvider auth) {
+  Widget _buildProfileContent(BuildContext context, AuthProvider auth, RoomProvider roomProvider) {
+    // Lấy số lượng phòng thực tế do user này đăng
+    final myRoomsCount = roomProvider.getMyRooms(auth.userId ?? "").length;
+
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
@@ -50,23 +56,10 @@ class ProfileScreen extends StatelessWidget {
             width: double.infinity,
             child: Column(
               children: [
-                Stack(
-                  children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.blue,
-                      child: Icon(Icons.person, size: 60, color: Colors.white),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
-                        child: const Icon(Icons.camera_alt, size: 18, color: Colors.white),
-                      ),
-                    ),
-                  ],
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.blue,
+                  child: Icon(Icons.person, size: 60, color: Colors.white),
                 ),
                 const SizedBox(height: 15),
                 Text(
@@ -81,11 +74,29 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          _buildInfoSection(context, 'Thông tin chi tiết (Nhấn để sửa)', [
+          _buildSection(context, 'Thông tin chi tiết (Nhấn để sửa)', [
             _buildInfoItem(context, Icons.badge_outlined, 'Họ và tên', auth.userName ?? 'Chưa cập nhật'),
             _buildInfoItem(context, Icons.phone_android_outlined, 'Số điện thoại', auth.userPhone ?? 'Chưa cập nhật'),
             _buildInfoItem(context, Icons.email_outlined, 'Email', auth.userEmail ?? 'Chưa cập nhật', isEmail: true),
             _buildInfoItem(context, Icons.cake_outlined, 'Ngày sinh', auth.userBirthday ?? 'Chưa cập nhật'),
+          ]),
+          const SizedBox(height: 10),
+          _buildSection(context, 'Quản lý của tôi', [
+            _buildInfoItem(
+              context, 
+              Icons.home_work_outlined, 
+              'Phòng đã đăng', 
+              '$myRoomsCount phòng',
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const MyRoomsScreen()));
+              }
+            ),
+            _buildInfoItem(
+              context, 
+              Icons.favorite_border, 
+              'Danh sách yêu thích', 
+              '${roomProvider.favoriteRooms.length} phòng'
+            ),
           ]),
           const SizedBox(height: 30),
           Padding(
@@ -129,12 +140,6 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text('Bạn chưa đăng nhập', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            const Text(
-              'Hãy đăng nhập ngay để lưu tin, xem lại lịch sử và quản lý thông tin cá nhân của bạn.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
@@ -158,7 +163,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context, String title, List<Widget> items) {
+  Widget _buildSection(BuildContext context, String title, List<Widget> items) {
     return Container(
       color: Colors.white,
       width: double.infinity,
@@ -176,16 +181,17 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(BuildContext context, IconData icon, String label, String value, {bool isEmail = false}) {
+  Widget _buildInfoItem(BuildContext context, IconData icon, String label, String value, {bool isEmail = false, VoidCallback? onTap}) {
+    bool isNotUpdated = value.contains('Chưa cập nhật');
     return InkWell(
-      onTap: isEmail ? null : () {
+      onTap: onTap ?? (isEmail ? null : () {
         Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const EditProfileScreen()));
-      },
+      }),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
           children: [
-            Icon(icon, size: 24, color: value == 'Chưa cập nhật' ? Colors.orange : Colors.grey.shade600),
+            Icon(icon, size: 24, color: isNotUpdated ? Colors.orange : Colors.grey.shade600),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
@@ -197,7 +203,7 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16, 
                       fontWeight: FontWeight.w500,
-                      color: value == 'Chưa cập nhật' ? Colors.orange : Colors.black,
+                      color: isNotUpdated ? Colors.orange : Colors.black,
                     ),
                   ),
                 ],

@@ -16,6 +16,7 @@ class Room {
   final LatLng location;
   bool isFavorite;
   final String hostId;
+  final String hostName; // Thêm tên chủ trọ
 
   Room({
     required this.id,
@@ -31,5 +32,6 @@ class Room {
     required this.location,
     this.isFavorite = false,
     required this.hostId,
+    required this.hostName,
   });
 }

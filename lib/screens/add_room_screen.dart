@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import '../models/room.dart';
 import '../providers/room_provider.dart';
 import '../providers/auth_provider.dart';
-//sua loi
+
 class AddRoomScreen extends StatefulWidget {
   static const routeName = '/add-room';
   final LatLng? initialLocation;
@@ -146,6 +146,7 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         images: [downloadUrl], 
         location: widget.initialLocation ?? LatLng(10.7769, 106.7009),
         hostId: FirebaseAuth.instance.currentUser!.uid,
+        hostName: auth.userName ?? 'Chủ trọ', // ĐÃ SỬA: Cung cấp hostName
       );
 
       await Provider.of<RoomProvider>(context, listen: false).addRoom(newRoom);
@@ -176,7 +177,6 @@ class _AddRoomScreenState extends State<AddRoomScreen> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            // Nút Hủy: Hỏi user trước khi thoát
             showDialog(
               context: context,
               builder: (ctx) => AlertDialog(

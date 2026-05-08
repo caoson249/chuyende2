@@ -7,11 +7,58 @@ class RoomProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Room> _rooms = [];
   bool _isLoading = false;
+  LatLng? _jumpToLocation;
 
-  List<Room> get rooms => [..._rooms];
+  String _searchQuery = '';
+  double? _minPrice;
+  double? _maxPrice;
+  List<String> _selectedAmenities = [];
+
+  List<Room> get rooms => _rooms;
   bool get isLoading => _isLoading;
+  LatLng? get jumpToLocation => _jumpToLocation;
 
   List<Room> get favoriteRooms => _rooms.where((room) => room.isFavorite).toList();
+
+  String get searchQuery => _searchQuery;
+  double? get minPrice => _minPrice;
+  double? get maxPrice => _maxPrice;
+  List<String> get selectedAmenities => _selectedAmenities;
+
+  void setFilters({
+    String? query,
+    double? minPrice,
+    double? maxPrice,
+    List<String>? amenities,
+  }) {
+    if (query != null) _searchQuery = query;
+    _minPrice = minPrice;
+    _maxPrice = maxPrice;
+    if (amenities != null) _selectedAmenities = List.from(amenities);
+    notifyListeners();
+  }
+
+  void clearFilters() {
+    _searchQuery = '';
+    _minPrice = null;
+    _maxPrice = null;
+    _selectedAmenities = [];
+    notifyListeners();
+  }
+
+  List<Room> get filteredRooms {
+    return _rooms.where((room) {
+      final matchesQuery = room.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          room.address.toLowerCase().contains(_searchQuery.toLowerCase());
+      
+      final matchesPrice = (_minPrice == null || room.price >= _minPrice!) &&
+          (_maxPrice == null || room.price <= _maxPrice!);
+      
+      final matchesAmenities = _selectedAmenities.every((amenity) => room.amenities.contains(amenity));
+
+      return matchesQuery && matchesPrice && matchesAmenities;
+    }).toList();
+  }
 
   Future<void> fetchRooms() async {
     _isLoading = true;
@@ -33,6 +80,7 @@ class RoomProvider with ChangeNotifier {
           images: List<String>.from(data['images'] ?? []),
           location: LatLng(data['lat'] ?? 0, data['lng'] ?? 0),
           hostId: data['hostId'] ?? "",
+          hostName: data['hostName'] ?? "Chủ trọ",
         );
       }).toList();
     } catch (e) {
@@ -43,24 +91,13 @@ class RoomProvider with ChangeNotifier {
     }
   }
 
-  // HÀM LỌC NÂNG CAO
-  List<Room> filterRooms({
-    String query = '',
-    double? minPrice,
-    double? maxPrice,
-    List<String> requiredAmenities = const [],
-  }) {
-    return _rooms.where((room) {
-      final matchesQuery = room.title.toLowerCase().contains(query.toLowerCase()) ||
-          room.address.toLowerCase().contains(query.toLowerCase());
-      
-      final matchesPrice = (minPrice == null || room.price >= minPrice) &&
-          (maxPrice == null || room.price <= maxPrice);
-      
-      final matchesAmenities = requiredAmenities.every((amenity) => room.amenities.contains(amenity));
+  void setJumpToLocation(LatLng location) {
+    _jumpToLocation = location;
+    notifyListeners();
+  }
 
-      return matchesQuery && matchesPrice && matchesAmenities;
-    }).toList();
+  void clearJumpToLocation() {
+    _jumpToLocation = null;
   }
 
   Future<void> addRoom(Room room) async {
@@ -78,6 +115,7 @@ class RoomProvider with ChangeNotifier {
         'lat': room.location.latitude,
         'lng': room.location.longitude,
         'hostId': room.hostId,
+        'hostName': room.hostName, // Lưu tên chủ trọ lên Firestore
         'createdAt': FieldValue.serverTimestamp(),
       });
       await fetchRooms();
@@ -120,11 +158,22 @@ class RoomProvider with ChangeNotifier {
     return _rooms.where((room) => room.hostId == userId).toList();
   }
   
-  List<Room> searchRooms(String query) {
-    if (query.isEmpty) return _rooms;
-    return _rooms.where((room) =>
-      room.title.toLowerCase().contains(query.toLowerCase()) ||
-      room.address.toLowerCase().contains(query.toLowerCase())
-    ).toList();
+  List<Room> filterRooms({
+    String query = '',
+    double? minPrice,
+    double? maxPrice,
+    List<String> requiredAmenities = const [],
+  }) {
+    return _rooms.where((room) {
+      final matchesQuery = room.title.toLowerCase().contains(query.toLowerCase()) ||
+          room.address.toLowerCase().contains(query.toLowerCase());
+      
+      final matchesPrice = (minPrice == null || room.price >= minPrice) &&
+          (maxPrice == null || room.price <= maxPrice);
+      
+      final matchesAmenities = requiredAmenities.every((amenity) => room.amenities.contains(amenity));
+
+      return matchesQuery && matchesPrice && matchesAmenities;
+    }).toList();
   }
 }

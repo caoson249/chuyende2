@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:latlong2/latlong.dart';
 import '../models/room.dart';
 import '../providers/room_provider.dart';
 
@@ -35,8 +36,8 @@ class RoomDetailScreen extends StatelessWidget {
             onPressed: () async {
               await provider.deleteRoom(room.id);
               if (context.mounted) {
-                Navigator.pop(ctx); // Đóng dialog
-                Navigator.pop(context); // Quay lại bản đồ
+                Navigator.pop(ctx);
+                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Đã xóa phòng trọ thành công!')),
                 );
@@ -54,7 +55,6 @@ class RoomDetailScreen extends StatelessWidget {
     final roomProvider = Provider.of<RoomProvider>(context);
     final isFavorite = roomProvider.rooms.any((r) => r.id == room.id && r.isFavorite);
     
-    // Kiểm tra xem người dùng hiện tại có phải là chủ phòng không
     final currentUser = FirebaseAuth.instance.currentUser;
     final bool isOwner = currentUser != null && currentUser.uid == room.hostId;
 
@@ -62,7 +62,6 @@ class RoomDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Chi tiết phòng trọ'),
         actions: [
-          // Nếu là chủ phòng, hiện nút Xóa
           if (isOwner)
             IconButton(
               icon: const Icon(Icons.delete_outline, color: Colors.white),
@@ -104,10 +103,17 @@ class RoomDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   const Divider(),
+                  // NHẤN VÀO ĐỊA CHỈ ĐỂ XEM TRÊN BẢN ĐỒ
                   ListTile(
                     leading: const Icon(Icons.location_on, color: Colors.red),
-                    title: const Text('Địa chỉ'),
+                    title: const Text('Địa chỉ (Nhấn để xem trên bản đồ)'),
                     subtitle: Text(room.address),
+                    trailing: const Icon(Icons.map, color: Colors.blue),
+                    onTap: () {
+                      roomProvider.setJumpToLocation(room.location);
+                      // Quay lại màn hình chính (Tab Bản đồ)
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
                   ),
                   ListTile(
                     leading: const Icon(Icons.aspect_ratio, color: Colors.blue),
@@ -121,7 +127,7 @@ class RoomDetailScreen extends StatelessWidget {
                   ),
                   const Divider(),
                   const Text(
-                    'Tiện nghi',
+                    'Tiện ích',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),

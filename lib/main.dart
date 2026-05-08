@@ -50,10 +50,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
-        // ĐỔI NỀN APPBAR SANG MÀU XÁM TẠI ĐÂY
+        // THIẾT LẬP NỀN XÁM TOÀN ỨNG DỤNG
+        scaffoldBackgroundColor: Colors.grey[100], 
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.grey[200], // Màu xám nhạt chuyên nghiệp
-          foregroundColor: Colors.black,    // Chữ màu đen để nổi bật trên nền xám
+          backgroundColor: Colors.grey[200],
+          foregroundColor: Colors.black,
           elevation: 0,
           centerTitle: true,
           titleTextStyle: const TextStyle(
@@ -62,7 +63,6 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        scaffoldBackgroundColor: Colors.white, // Nền thân trang vẫn để trắng cho sạch
       ),
       home: const MainNavigation(),
       routes: {
@@ -92,6 +92,17 @@ class _MainNavigationState extends State<MainNavigation> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    final roomProvider = Provider.of<RoomProvider>(context, listen: false);
+    roomProvider.addListener(() {
+      if (roomProvider.jumpToLocation != null) {
+        setState(() => _selectedIndex = 0);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
@@ -104,6 +115,7 @@ class _MainNavigationState extends State<MainNavigation> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.map_outlined), activeIcon: Icon(Icons.map), label: 'Bản đồ'),
           BottomNavigationBarItem(icon: Icon(Icons.search), activeIcon: Icon(Icons.search_sharp), label: 'Tìm kiếm'),
